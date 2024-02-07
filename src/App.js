@@ -39,7 +39,7 @@ function App() {
               path="/"
               element={<Login />}
             />
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/products" />} />
             {/* Add more routes as needed */}
           </Routes>
         </Router>

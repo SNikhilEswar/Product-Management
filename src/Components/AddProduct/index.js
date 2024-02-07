@@ -52,6 +52,7 @@ const AddUser = () => {
 
     const { getAllCategories, categories, handleCreateProduct } = useApi();
 
+
     const navigate = useNavigate();
 
     const handleNavigate = () => {
@@ -83,7 +84,6 @@ const AddUser = () => {
             formik.setErrors({ images: 'At least one image URL is required' });
         } else {
             // Handle form submission logic here
-            console.log(values);
             handleCreateProduct(values, handleNavigate)
         }
     };

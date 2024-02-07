@@ -116,7 +116,6 @@ const EditProduct = ({ openEdit, handleCloseEdit }) => {
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting }) => {
-                  console.log(values);
                   if (values) {
                     handleEditProduct(singleProduct.id, values, handleCloseEdit)
                   }

@@ -33,6 +33,19 @@ export const ApiProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [skip, setSkip] = useState(1);
 
+  
+  // handling pagination
+  const handleChange = (event, value) => {
+    setSkip(value);
+  };
+
+    // handle for getting products based on id
+    const handleCategory = (value) => {
+      if (value === null) {
+        setCatecoryList([]);
+      } else getCategoryList(value);
+    }
+
 
   // Handles the login for User to login
   const handleUserLogin = async (account, setAccount, navigate) => {
@@ -81,10 +94,6 @@ export const ApiProvider = ({ children }) => {
   }
 
 
-  // handling pagination
-  const handleChange = (event, value) => {
-    setSkip(value);
-  };
 
   // handling get all products or search based on condition
   const getAllProducts = async (skip) => {
@@ -118,6 +127,7 @@ export const ApiProvider = ({ children }) => {
       handleError(err);
       //throw error;
     }
+    setCatecoryList([]);
   }
 
   // handling get single product details based on id
@@ -130,7 +140,6 @@ export const ApiProvider = ({ children }) => {
       });
 
       if (response.data) {
-        // console.log(response.data);
         setSingleProduct(response.data);
       }
     } catch (error) {
@@ -155,6 +164,8 @@ export const ApiProvider = ({ children }) => {
 
       if (response.data) {
         setCategories(response.data);
+        setCatecoryList([]);
+        setSkip(1);
       }
     } catch (error) {
       setCategories([]);
@@ -165,13 +176,7 @@ export const ApiProvider = ({ children }) => {
   }
 
 
-  // handle for getting products based on id
-  const handleCategory = (value) => {
-    console.log(value);
-    if (value === null) {
-      setCatecoryList([]);
-    } else getCategoryList(value);
-  }
+
 
   // handling for getting products
   const getCategoryList = async (categoryVal) => {
@@ -203,6 +208,7 @@ export const ApiProvider = ({ children }) => {
       if (response.data) {
         handleSuccess(`Product Created Successfully ID ${response.data.id}`);
         handleNavigate();
+        setSkip(1);
         getAllProducts(skip);
       }
     } catch (error) {
@@ -276,7 +282,7 @@ export const ApiProvider = ({ children }) => {
         setSingleProduct,
         handleEditProduct,
         handleDeleteProduct,
-        handleCategory
+        handleCategory,
       }}
     >
       {children}

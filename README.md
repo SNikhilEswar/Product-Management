@@ -36,3 +36,17 @@ If you aren't satisfied with the build tool and configuration choices, you can `
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+
+# Product-Structure
+
+* Application Name: Products Management
+* Initial Page: Login Page
+* Login Process: Enter correct credentials
+* After Login: Redirect to Products Page
+* Products Page Features:
+* Display all products with pagination
+* Search functionality using the "Search Products" search bar
+* Add Product: Option to add a new product
+* Edit Product: Click on "Edit" to update product details
+* Delete Product: Click on "Delete" to remove a product
