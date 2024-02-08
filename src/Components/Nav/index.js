@@ -1,128 +1,96 @@
 import React, { useState } from 'react';
-// material-ui
-import {
-  AppBar,
-  Toolbar,
-  CssBaseline,
-  Typography,
-  makeStyles,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-} from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-
-// third party
 import { Link } from 'react-router-dom';
+import MenuIcon from '@mui/icons-material/Menu';
+import {AppBar,Toolbar,Button,Typography,IconButton,Drawer,List,ListItem,useMediaQuery} from '@mui/material'
 import { toast } from 'react-toastify';
 
-const useStyles = makeStyles((theme) => ({
-  navlinks: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
-      marginLeft: theme.spacing(10),
-    },
-  },
-  logo: {
-    flexGrow: 1,
-    cursor: 'pointer',
-  },
-  link: {
-    textDecoration: 'none',
-    color: 'white',
-    fontSize: '20px',
-    marginLeft: theme.spacing(2),
-    '&:hover': {
-      color: 'yellow',
-      borderBottom: '1px solid white',
-    },
-    [theme.breakpoints.up('md')]: {
-      marginLeft: theme.spacing(3),
-    },
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
-  },
-  drawerPaper: {
-    width: 200,
-  },
-}));
-
 const Navbar = () => {
-  const classes = useStyles();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
 
-  const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
+  const toggleDrawer = (open) => () => {
+    setIsDrawerOpen(open);
   };
 
-  const removeData = () => {
+    const removeData = () => {
     toast.warning('Your Logged Out Please Visit again');
     sessionStorage.removeItem('token');
   };
 
   return (
-    <>
-      <AppBar position="static" style={{ marginBottom: 40 }}>
-        <CssBaseline />
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={toggleDrawer}
-            className={classes.menuButton}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h4" className={classes.logo}>
-            Products Management
+    <AppBar position="static" sx={{ marginBottom: 5 }}>
+      <Toolbar >
+        {/* Logo and Hamburger Icon for smaller screens */}
+        {isSmallScreen ? (
+          <>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              onClick={toggleDrawer(true)}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" component="div">
+              Product Management
+            </Typography>
+          </>
+        ) : (
+          // Logo for larger screens
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Product Management
           </Typography>
-          <div className={classes.navlinks}>
-            <Link to="/products" className={classes.link}>
+        )}
+
+        {/* Navigation Links */}
+        {isSmallScreen ? (
+          // Render nothing on smaller screens (hamburger menu will handle it)
+          <></>
+        ) : (
+          // Render navigation links on larger screens
+          <>
+            <Button color="inherit" component={Link} to="/products">
               Products
-            </Link>
-            <Link to="/categories" className={classes.link}>
+            </Button>
+            <Button color="inherit" component={Link} to="/categories">
               Categories
-            </Link>
-            <Link to="/add-product" className={classes.link}>
-              Add Product
-            </Link>
-            <Link onClick={removeData} to="/" className={classes.link}>
+            </Button>
+            <Button color="inherit" component={Link} to="/add-product">
+              Add Products
+            </Button>
+            <Button color="inherit" component={Link} to="/" onClick={removeData}>
               Logout
-            </Link>
-          </div>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={toggleDrawer}
-        classes={{ paper: classes.drawerPaper }}
-      >
-        <List>
-          <ListItem button component={Link} to="/products" onClick={toggleDrawer}>
-            <ListItemText primary="Products" />
-          </ListItem>
-          <ListItem button component={Link} to="/categories" onClick={toggleDrawer}>
-            <ListItemText primary="Categories" />
-          </ListItem>
-          <ListItem button component={Link} to="/add-product" onClick={toggleDrawer}>
-            <ListItemText primary="Add Product" />
-          </ListItem>
-          <ListItem button onClick={removeData} component={Link} to="/">
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </List>
-      </Drawer>
-    </>
+            </Button>
+          </>
+        )}
+
+        {/* Responsive Drawer */}
+        <Drawer
+          anchor="left"
+          open={isDrawerOpen}
+          onClose={toggleDrawer(false)}
+          onClick={toggleDrawer(false)}
+        >
+          <List>
+            <ListItem button component={Link} to="/products">
+              Products
+            </ListItem>
+            <ListItem button component={Link} to="/categories">
+              Categories
+            </ListItem>
+            <ListItem button component={Link} to="/add-products">
+              Add Products
+            </ListItem>
+            <ListItem button component={Link} to="/logout">
+              Logout
+            </ListItem>
+          </List>
+        </Drawer>
+      </Toolbar>
+    </AppBar>
   );
 };
 
 export default Navbar;
+

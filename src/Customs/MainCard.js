@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 
 // material-ui
-import { useTheme } from '@material-ui/core/styles';
-import { Card, CardContent, CardHeader, Divider, Typography } from '@material-ui/core';
+import { useTheme } from '@mui/material/styles';
+import { Card, CardContent, CardHeader, Divider, Typography } from '@mui/material';
 
 // header style
 const headerSX = {
-  p: 2.5,
+  p: 1.5,
   '& .MuiCardHeader-action': { m: '0px auto', alignSelf: 'center' }
 };
 

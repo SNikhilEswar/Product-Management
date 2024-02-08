@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
 // material-ui
-import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
   Typography,
@@ -13,8 +12,10 @@ import {
   CardActions,
   Grid,
   TextField,
-} from '@material-ui/core';
-import Pagination from '@material-ui/lab/Pagination';
+  Backdrop, 
+  CircularProgress
+} from '@mui/material';
+import Pagination from '@mui/material/Pagination';
 
 // project imports
 import Navbar from '../Nav';
@@ -23,27 +24,11 @@ import SingleProduct from '../Reusable/SingleProduct';
 import EditProduct from '../Reusable/EditProduct';
 import DeleteProduct from '../Reusable/DeleteProduct';
 
-// Define styles using Material-UI makeStyles
-const useStyles = makeStyles((theme) => ({
-  container: {
-    paddingTop: theme.spacing(2),
-  },
-  textField: {
-    marginLeft: 'auto',
-  },
-  pagination: {
-    marginTop: theme.spacing(2),
-    display: 'flex',
-    justifyContent: 'center',
-  },
-}));
 
 // Render the component with Material-UI components
 // Functional component Users
 const Users = () => {
 
-  // Apply defined styles
-  const classes = useStyles();
 
   // State variables for modal visibility
   const [open, setOpen] = useState(false);
@@ -86,7 +71,7 @@ const Users = () => {
 
 
   // Destructure values from useApi hook
-  const { products, handleChange, skip, count, searchQuery, setSearchQuery, getAllProducts, getSingleProduct } = useApi();
+  const { products, handleChange, skip, count, searchQuery, setSearchQuery, getAllProducts, getSingleProduct, loading } = useApi();
 
 
   // Fetch products on component mount and when skip or searchQuery changes
@@ -97,10 +82,13 @@ const Users = () => {
   // JSX structure for the Users component
   return (
     <>
+      <Backdrop style={{ zIndex: 1301, color: "#fff" }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       {/* Navbar component */}
       <Navbar />
       {/* Main content container */}
-      <Container maxWidth="lg" className={classes.container}>
+      <Container maxWidth="lg">
         <Grid container spacing={3}>
           <Grid item xs={6} sm={4} md={4} lg={3} xl={3}>
             <TextField
@@ -108,7 +96,6 @@ const Users = () => {
               label="Search Products"
               variant="outlined"
               fullWidth
-              className={classes.textField}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -117,7 +104,7 @@ const Users = () => {
         {/* Pagination component */}
         {count !== null && (
           <Pagination
-            className={classes.pagination}
+            style={{ display: 'flex', justifyContent: 'center' }}
             count={count.limit}
             page={skip}
             onChange={handleChange}
@@ -142,7 +129,7 @@ const Users = () => {
                           title={res.title}
                         />
                         <CardContent>
-                          <Typography gutterBottom variant="h6" component="h2">
+                          <Typography gutterBottom variant="h6" component="h6">
                             {res.title}
                           </Typography>
                           <Typography variant="subtitle1" color="textSecondary">

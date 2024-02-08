@@ -32,6 +32,7 @@ export const ApiProvider = ({ children }) => {
   const [categoryList, setCatecoryList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [skip, setSkip] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   
   // handling pagination
@@ -111,6 +112,7 @@ export const ApiProvider = ({ children }) => {
           setSkip(1);
         }
       } else {
+        setLoading(true);
         const response = await axios.get(`${APIURL}/products?limit=10&skip=${skip === 1 ? 0 : (skip - 1) * 10}&select=title,price,description,thumbnail`, {
           headers: {
             'Authorization': token,
@@ -120,11 +122,13 @@ export const ApiProvider = ({ children }) => {
         if (response.data) {
           setProducts(response.data.products);
           setCount(response.data);
+          setLoading(false);
         }
       }
     } catch (error) {
       const err = error.message === "Network Error" ? error.message : error.response.data.message
       handleError(err);
+      setLoading(false);
       //throw error;
     }
     setCatecoryList([]);
@@ -180,6 +184,7 @@ export const ApiProvider = ({ children }) => {
 
   // handling for getting products
   const getCategoryList = async (categoryVal) => {
+    setLoading(true);
     try {
       const response = await axios.get(`${APIURL}/products/category/${categoryVal}`, {
         headers: {
@@ -189,11 +194,13 @@ export const ApiProvider = ({ children }) => {
 
       if (response.data) {
         setCatecoryList(response.data.products);
+        setLoading(false);
       }
     } catch (error) {
       setCatecoryList([]);
       const err = error.message === "Network Error" ? error.message : error.response.data.message
       handleError(err);
+      setLoading(false);
       //throw error;
     }
   }
@@ -272,6 +279,7 @@ export const ApiProvider = ({ children }) => {
         singleProduct,
         categories,
         categoryList,
+        loading,
         handleUserLogin,
         handleChange,
         setSearchQuery,

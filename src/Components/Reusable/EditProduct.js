@@ -11,9 +11,9 @@ import {
   Slide,
   TextField,
   Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import Autocomplete from '@material-ui/lab/Autocomplete';
+} from "@mui/material";
+
+import Autocomplete from '@mui/material/Autocomplete';
 // third party
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -39,23 +39,6 @@ const validationSchema = Yup.object().shape({
 });
 
 
-// Styles using Material-UI makeStyles
-const useStyles = makeStyles((theme) => ({
-  userAddDialog: {
-    "&>div:nth-child(3)": {
-      justifyContent: "center",
-      "&>div": {
-        margin: "0px",
-        borderRadius: "0px",
-        maxWidth: "600px",
-        maxHeight: "90%",
-      },
-    },
-  },
-  spacing: {
-    margin: '15px 0'
-  }
-}));
 
 // Transition effect for the dialog
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -63,7 +46,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 const EditProduct = ({ openEdit, handleCloseEdit }) => {
 
-  const classes = useStyles();
 
   const { singleProduct, categories, setSingleProduct, getAllCategories, handleEditProduct } = useApi();
 
@@ -93,14 +75,13 @@ const EditProduct = ({ openEdit, handleCloseEdit }) => {
         <Dialog
           open={openEdit}
           TransitionComponent={Transition}
-          className={classes.userAddDialog}
           transitionDuration={800}
         >
           <DialogTitle disableTypography>
             <Typography variant="h5">Edit Product</Typography>
           </DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2} style={{ padding: 20 }}>
+          <DialogContent style={{ padding: 20 }}>
+            <Grid container spacing={2} style={{ padding: 10 }} >
               <Formik
                 initialValues={singleProduct === null ? '' : {
                   title: singleProduct.title,
@@ -123,7 +104,7 @@ const EditProduct = ({ openEdit, handleCloseEdit }) => {
               >
                 {(props) => (
                   <form onSubmit={props.handleSubmit}>
-                    <Grid item xs={12} className={classes.spacing}>
+                    <Grid item xs={12}>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
                           <TextField
@@ -265,12 +246,12 @@ const EditProduct = ({ openEdit, handleCloseEdit }) => {
                                 <TextField
                                   label={`Image URL ${index + 1}`}
                                   fullWidth
-                                  name="images"
+                                  name={`images[${index}]`}
                                   value={image}
                                   onChange={(e) => handleImageChange(index, e.target.value, props)}
                                   onBlur={props.handleBlur}
-                                  error={props.touched.images && Boolean(props.errors.images)}
-                                  helperText={props.touched.images && props.errors.images}
+                                  error={props.touched.images && Boolean(props.errors.images?.[index])}
+                                  helperText={props.touched.images && props.errors.images?.[index]}
                                 />
                               </div>
                             ))}
@@ -280,6 +261,8 @@ const EditProduct = ({ openEdit, handleCloseEdit }) => {
                             Add Image
                           </Button>
                         </Grid>
+
+
                         <DialogActions sx={{ mt: 2 }}>
                           <Button
                             variant="contained"

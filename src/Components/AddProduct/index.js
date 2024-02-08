@@ -1,14 +1,8 @@
 import React, { useEffect } from 'react';
 
 // material-ui
-import {
-    Button,
-    Grid,
-    TextField,
-    Container
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Button, Grid, TextField, Container } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
 
 
 // third party
@@ -38,17 +32,9 @@ const validationSchema = Yup.object().shape({
 });
 
 
-// Styles using Material-UI makeStyles
-const useStyles = makeStyles((theme) => ({
-    spacing: {
-        margin: '15px 0'
-    }
-}));
 
 // Functional component for adding
 const AddUser = () => {
-
-    const classes = useStyles();
 
     const { getAllCategories, categories, handleCreateProduct } = useApi();
 
@@ -77,16 +63,36 @@ const AddUser = () => {
 
     const onSubmit = (values) => {
         const areAllImagesFilled = values.images.every((image) => !!image);
+        console.log(areAllImagesFilled);
 
         if (!areAllImagesFilled) {
             formik.setErrors({ images: 'Please fill out all image URLs' });
         } else if (values.images.length === 0) {
             formik.setErrors({ images: 'At least one image URL is required' });
         } else {
-            // Handle form submission logic here
-            handleCreateProduct(values, handleNavigate)
+            // Check if any image URL is empty
+            const emptyImageIndices = values.images.reduce((indices, image, index) => {
+                if (!image) {
+                    indices.push(index);
+                }
+                return indices;
+            }, []);
+    
+            if (emptyImageIndices.length > 0) {
+                // Set errors for individual image fields
+                emptyImageIndices.forEach((index) => {
+                    formik.setFieldError(`images[${index}]`, 'Image URL is required');
+                });
+            } else {
+                // Handle form submission logic here
+                handleCreateProduct(values, handleNavigate);
+            }
         }
     };
+    
+    
+    
+    
 
     const formik = useFormik({
         initialValues,
@@ -115,11 +121,11 @@ const AddUser = () => {
             {/* Navbar component */}
             <Navbar />
             {/* Main content container */}
-            <Container maxWidth="lg" className={classes.container}>
+            <Container maxWidth="lg">
                 <MainCard title="Add Product">
                     <Grid container spacing={2} style={{ padding: 20 }}>
                         <form onSubmit={formik.handleSubmit}>
-                            <Grid item xs={12} className={classes.spacing}>
+                            <Grid item xs={12}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
                                         <TextField
@@ -261,11 +267,12 @@ const AddUser = () => {
                                                     <TextField
                                                         label={`Image URL ${index + 1}`}
                                                         fullWidth
-                                                        name="images"
+                                                        name={`images[${index}]`}
                                                         value={image}
                                                         onChange={(e) => handleImageChange(index, e.target.value)}
                                                         onBlur={formik.handleBlur}
-                                                        error={formik.touched.images && Boolean(formik.errors.images)}
+                                                        error={formik.touched.images && formik.touched.images[index] && Boolean(formik.errors.images?.[index])}
+                                                        // helperText={formik.touched.images && formik.touched.images[index] && formik.errors.images?.[index]}
                                                         helperText={formik.touched.images && formik.errors.images}
                                                     />
                                                 </div>

@@ -9,49 +9,16 @@ import {
     DialogTitle,
     Slide,
     Typography,
-    Grid, Paper
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+    Grid,
+    Paper,
+  } from '@mui/material';
+
 // project imports
 import { useApi } from '../Context/ApiContext';
 // third party
 import Carousel from 'react-material-ui-carousel';
 
-// Styles using Material-UI makeStyles
-const useStyles = makeStyles((theme) => ({
-    userAddDialog: {
-        "&>div:nth-child(3)": {
-            justifyContent: "center",
-            "&>div": {
-                margin: "0px",
-                borderRadius: "0px",
-                maxWidth: "800px",
-                maxHeight: "90%",
-            },
-        },
-    },
-    spacing: {
-        margin: '15px 0'
-    },
-    root: {
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: theme.spacing(2),
-    },
-    paper: {
-        padding: theme.spacing(2),
-        maxWidth: 800,
-    },
-    carouselContainer: {
-        width: '100%',
-        maxWidth: 400,
-    },
-    carouselImage: {
-        width: '100%',
-        height: 'auto', // Ensure the height is adjusted proportionally
-        maxHeight: 300, // Set a fixed max height for the images
-    },
-}));
+
 
 // Transition effect for the dialog
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -60,10 +27,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 const SingleProduct = ({ open, handleClose }) => {
-    const classes = useStyles();
+
     const { singleProduct } = useApi();
 
-    // Slick settings for the carousel
+ 
 
     return (
         <>
@@ -71,7 +38,6 @@ const SingleProduct = ({ open, handleClose }) => {
                 open={open}
                 TransitionComponent={Transition}
                 onClose={handleClose}
-                className={classes.userAddDialog}
                 transitionDuration={800}
             >
                 <DialogTitle disableTypography>
@@ -79,13 +45,23 @@ const SingleProduct = ({ open, handleClose }) => {
                 </DialogTitle>
                 <DialogContent>
                     {singleProduct === null ? '' :
-                        <div className={classes.root}>
-                            <Paper className={classes.paper}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            marginTop: 10,
+                        }}>
+                            <Paper style={{
+                                   padding: 15,
+                                   maxWidth: 800,
+                            }}>
                                 <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={6} className={classes.carouselContainer}>
+                                    <Grid item xs={12} sm={6} style={{
+                                          width: '100%',
+                                          maxWidth: 400,
+                                    }}>
                                         <Carousel>
                                             {singleProduct.images.map((image, index) => (
-                                                <img key={index} src={image} alt={`Product Image ${index + 1}`} className={classes.carouselImage} />
+                                                <img key={index} src={image} alt={`Product Image ${index + 1}`} style={{width: '100%', height: 'auto', maxHeight: 500}} />
                                             ))}
                                         </Carousel>
                                     </Grid>

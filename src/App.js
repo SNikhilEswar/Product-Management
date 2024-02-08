@@ -1,6 +1,6 @@
 import React from "react";
 // material-ui
-import CssBaseline from "@material-ui/core/CssBaseline";
+import { CssBaseline } from '@mui/material';
 
 
 // third party

@@ -1,153 +1,113 @@
-import React from "react";
-// material-ui
-import { Avatar, Button, CssBaseline, TextField, Paper, Grid, Typography } from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { makeStyles } from "@material-ui/core/styles";
+import * as React from 'react';
+import {Avatar,Button,CssBaseline,TextField,Box,Typography,Container} from '@mui/material'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 // project imports
 import { useApi } from '../../Context/ApiContext';
 
 // third party
 import { useNavigate } from "react-router-dom";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object({
+  username: Yup.string().required('UserName is required'),
+  password: Yup.string().required('Password is required'),
+});
 
 
-// Styling for the component using Material-UI makeStyles
-const useStyles = makeStyles((theme) => ({
-    root: {
-        height: "100vh",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundSize: "cover",
-        backgroundColor:
-            theme.palette.type === "light"
-                ? theme.palette.grey[50]
-                : theme.palette.grey[900],
 
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    size: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center"
-    },
+const defaultTheme = createTheme();
 
-    paper: {
-        margin: theme.spacing(2, 6),
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
-    },
-    avatar: {
-        margin: theme.spacing(0),
-        backgroundColor: theme.palette.secondary.main
-    },
-    form: {
-        width: "100%",
-        marginTop: theme.spacing(1)
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2)
-    }
-}));
+export default function SignIn() {
 
 
-// Main component for signing in
-export default function SignInSide() {
-
-    const classes = useStyles();
-
-    // Navigation hook for redirection
+      // Navigation hook for redirection
     const navigate = useNavigate();
 
     // State for username and password inputs
     const [account, setAccount] = React.useState({ username: "", password: "" });
 
-    // Update the account state based on input changes
-    const handelAccount = (property, event) => {
-
-        const accountCopy = { ...account };
-        accountCopy[property] = event.target.value;
-
-        setAccount(accountCopy);
-
-    }
+ 
 
     // Custom hook for api
     const { handleUserLogin } = useApi();
 
-    // Handle login button click
-    const handelLogin = (e) => {
-        e.preventDefault();
-        // Check if the entered credentials match the hardcoded values
 
-        handleUserLogin(account,setAccount, navigate)
-    };
+    const formik = useFormik({
+      initialValues: {
+        username: '',
+        password: '',
+      },
+      validationSchema: validationSchema,
+      onSubmit: (values) => {
+        // Handle form submission (e.g., login logic)
+        handleUserLogin(values, setAccount, navigate);
+      },
+    });
+    
 
-    // Render the component with Material-UI components
-    return (
-        <Grid container component="main" className={classes.root}>
-            <CssBaseline />
-            <Grid
-                className={classes.size}
-                item
-                xs={12}
-                sm={6}
-                md={4}
-                lg={4}
-                xl={4}
-                component={Paper}
-                elevation={1}
-                square
-            >
-                <div className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Sign in
-                    </Typography>
-                    <form className={classes.form} onSubmit={handelLogin}>
-                        <TextField
-                            value={account.username}
-                            onChange={(event) => handelAccount("username", event)}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            autoFocus
-                        />
-                        <TextField
-                            value={account.password}
-                            onChange={(event) => handelAccount("password", event)}
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                        />
+//     // Render the component with Material-UI components
 
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            Login
-                        </Button>
-                    </form>
-                </div>
-            </Grid>
-        </Grid>
-    );
+  return (
+    <ThemeProvider theme={defaultTheme}>
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <form onSubmit={formik.handleSubmit}>
+          <TextField
+            margin="normal"
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+            autoFocus
+            value={formik.values.username}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.username && Boolean(formik.errors.username)}
+            helperText={formik.touched.username && formik.errors.username}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Login
+          </Button>
+        </form>
+      </Box>
+    </Container>
+  </ThemeProvider>
+  );
 }

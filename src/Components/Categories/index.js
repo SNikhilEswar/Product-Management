@@ -1,8 +1,21 @@
 import React, { useEffect, useState } from 'react';
 
 // material-ui
-import { Button,Typography, Container,Card, CardActionArea, CardMedia, CardContent, CardActions, Grid,TextField} from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import {
+  Button,
+  Typography,
+  Container,
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Grid,
+  TextField,
+  Autocomplete,
+  Backdrop, 
+  CircularProgress
+} from '@mui/material';
 
 // project imports
 import MainCard from "../../Customs/MainCard";
@@ -18,7 +31,7 @@ import DeleteProduct from '../Reusable/DeleteProduct';
 // Render the component with Material-UI components
 const Categories = () => {
 
-  const { getAllCategories, categories, categoryList, handleCategory,getSingleProduct } = useApi();
+  const { getAllCategories, categories, categoryList, handleCategory, getSingleProduct, loading } = useApi();
 
   const [open, setOpen] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
@@ -75,6 +88,9 @@ const Categories = () => {
             renderInput={(params) => <TextField {...params} label="Product Categories" variant="outlined" />}
           />
         }>
+          <Backdrop style={{ zIndex: 1301, color: "#fff" }} open={loading}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
           {categoryList.length === 0 ? <h2 style={{ textAlign: 'center' }}>Please Select the products Categories to View Products</h2> :
 
             <Grid container spacing={3}>
@@ -103,7 +119,7 @@ const Categories = () => {
                       <Button size="small" color="primary" onClick={() => handleModal('openEdit', res.id)}>
                         Edit
                       </Button>
-                      <Button size="small" color="secondary"  onClick={() => handleModal('openDelete', res.id)}>
+                      <Button size="small" color="secondary" onClick={() => handleModal('openDelete', res.id)}>
                         Delete
                       </Button>
                     </CardActions>
@@ -115,9 +131,9 @@ const Categories = () => {
           }
         </MainCard>
       </Container>
-      <SingleProduct open={open} handleClose={handleClose}/>
-      <EditProduct openEdit={openEdit} handleCloseEdit={handleCloseEdit}/>
-      <DeleteProduct openDelete={openDelete} handleCloseDelete={handleCloseDelete}/>
+      <SingleProduct open={open} handleClose={handleClose} />
+      <EditProduct openEdit={openEdit} handleCloseEdit={handleCloseEdit} />
+      <DeleteProduct openDelete={openDelete} handleCloseDelete={handleCloseDelete} />
     </>
   );
 };
